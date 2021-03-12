@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Body
+from fastapi.middleware.cors import CORSMiddleware
 from tensorflow.keras import backend as K
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.models import load_model
@@ -73,6 +74,14 @@ train_data_processed, test_data_processed = preprocess_dataset(X_train, X_test)
 tokenizer = create_word_index_dict(train_data_processed+test_data_processed)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins="*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/predict_clickbait")
 def predict_clickbait(headline: str = Body(...)):
