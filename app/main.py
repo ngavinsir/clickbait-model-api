@@ -84,5 +84,10 @@ app.add_middleware(
 
 @app.post("/predict_clickbait")
 def predict_clickbait(headline: str = Body(...)):
-    input = tokenizer.texts_to_sequences([headline])
-    return True if K.get_value(model(np.array(input)))[0,0] >= 0.5 else False
+    try:
+        input = tokenizer.texts_to_sequences([headline])
+        if len(input[0]) == 0:
+            return False
+        return True if K.get_value(model(np.array(input)))[0,0] >= 0.5 else False
+    except:
+        return False
